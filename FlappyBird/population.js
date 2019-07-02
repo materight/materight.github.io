@@ -46,6 +46,9 @@ class Population {
         console.log("Best fitness: ", this.diedBirds[0].fitness)
 
         let mutationRate = 0.01
+        const top = 0.4
+        const group1 = 0.8
+        const group2 = 0.9
 
         if (this.diedBirds.every(x => x.fitness < 320)) {
             // Nessun bird ha passato la prima pipe, reinizializzo tutti i valori
@@ -55,8 +58,13 @@ class Population {
         for (let i = 0; i < this.diedBirds.length; i++) {
             let b = this.diedBirds[i]
             b.reset()
-            if (i >= 2) {
+            if (i >= birdsCount * top && i < birdsCount * group1) {
                 b.brain.mutate(this.diedBirds[0].brain, this.diedBirds[1].brain, mutationRate)
+            } else if (i >= birdsCount * group1 && i < birdsCount * group2) {
+                b.brain.mutate(this.diedBirds[Math.floor(random() * birdsCount * top)].brain, this.diedBirds[Math.floor(random() * birdsCount * top)].brain, mutationRate)
+            } else if (i >= birdsCount * group2) {
+                let randomIndex = Math.floor(random() * birdsCount * 0.1)
+                b.brain.mutate(this.diedBirds[randomIndex].brain, this.diedBirds[randomIndex].brain, 0.1)
             }
         }
 
